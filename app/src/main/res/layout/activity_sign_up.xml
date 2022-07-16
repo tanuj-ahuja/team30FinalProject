@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SignUpActivity">
 
     <EditText
         android:id="@+id/email"
@@ -21,28 +21,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/enter_password"
-        app:layout_constraintBottom_toTopOf="@+id/login"
+        app:layout_constraintBottom_toTopOf="@+id/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in"
-        app:layout_constraintBottom_toTopOf="@+id/redirect_to_signup"
+        android:text="@string/sign_up"
+        app:layout_constraintBottom_toTopOf="@+id/redirect_to_sign_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/redirect_to_signup"
+        android:id="@+id/redirect_to_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/don_t_have_an_account_sign_up"
+        android:text="@string/already_have_an_account_sign_in"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
