@@ -6,4 +6,7 @@
     <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
     <string name="sign_up">Sign Up</string>
     <string name="already_have_an_account_sign_in">Already have an account? Sign In</string>
+    <string name="add_product_details">Add Product Details</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 </resources>
