@@ -94,6 +94,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         Uri contentUri = data.getData();
 
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        mediaScanIntent.setData(contentUri);
+                        sendBroadcast(mediaScanIntent);
+                        // add to firebase
                     }
                 }
             }
@@ -106,15 +110,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
-                        Bitmap image = (Bitmap) data.getExtras().get("data");
-                        File f = new File(currentPhotoPath);
-                        Log.d("message", image.toString());
-                        Log.d("message", f.toString());
-//
-//                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//                        Uri contentUri = Uri.fromFile(f);
-//                        mediaScanIntent.setData(contentUri);
-//                        sendBroadcast(mediaScanIntent);
+                        Uri contentUri = data.getData();
+                        // add to firebase
                     }
                 }
             }
@@ -125,7 +122,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
