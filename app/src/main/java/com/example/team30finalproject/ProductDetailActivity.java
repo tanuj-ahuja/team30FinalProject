@@ -26,6 +26,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -38,6 +44,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private EditText name;
     private Button camera, gallery;
     private String currentPhotoPath;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         name = (EditText) findViewById(R.id.name);
         camera = (Button) findViewById(R.id.camera);
         gallery = (Button) findViewById(R.id.gallery);
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +99,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
+                        File f = new File(currentPhotoPath);
                         Intent data = result.getData();
                         Uri contentUri = data.getData();
 
@@ -98,10 +107,32 @@ public class ProductDetailActivity extends AppCompatActivity {
                         mediaScanIntent.setData(contentUri);
                         sendBroadcast(mediaScanIntent);
                         // add to firebase
+                        uploadImageToFirebase(f.getName(), contentUri);
                     }
                 }
             }
     );
+
+    private void uploadImageToFirebase(String name, Uri contentUri) {
+        StorageReference image = storageReference.child("images/" + name);
+        image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("tag", "Success" + uri.toString());
+                    }
+                });
+                Toast.makeText(ProductDetailActivity.this, "Image is Uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ProductDetailActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     ActivityResultLauncher<Intent> galleryActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -112,6 +143,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         Uri contentUri = data.getData();
                         // add to firebase
+                        uploadImageToFirebase("some-image-name", contentUri);
                     }
                 }
             }
