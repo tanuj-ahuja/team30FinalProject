@@ -154,8 +154,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -178,6 +178,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
+                Log.d("heyy", ex.toString());
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {

@@ -10,12 +10,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    FloatingActionButton fab = findViewById(R.id.add);
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        fab = (FloatingActionButton) findViewById(R.id.add);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
