@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +47,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Button camera, gallery;
     private String currentPhotoPath;
     StorageReference storageReference;
+    ActivityResultLauncher<Intent> cameraActivityResultLauncher;
+    ActivityResultLauncher<Intent> galleryActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,43 @@ public class ProductDetailActivity extends AppCompatActivity {
                 galleryActivityResultLauncher.launch(gallery);
             }
         });
+
+        cameraActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            File f = new File(currentPhotoPath);
+                            Uri contentUri = Uri.fromFile(f);
+
+                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            mediaScanIntent.setData(contentUri);
+                            sendBroadcast(mediaScanIntent);
+                            // add to firebase
+                            uploadImageToFirebase(f.getName(), contentUri);
+                        }
+                    }
+                }
+        );
+
+        galleryActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            Uri contentUri = data.getData();
+                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            String imageFileName = "JPEG_" + timeStamp + "_";
+                            // add to firebase
+                            uploadImageToFirebase(imageFileName, contentUri);
+                        }
+                    }
+                }
+        );
+
     }
 
     private void askCameraPermission() {
@@ -93,26 +134,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
-    ActivityResultLauncher<Intent> cameraActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        File f = new File(currentPhotoPath);
-                        Intent data = result.getData();
-                        Uri contentUri = data.getData();
-
-                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                        mediaScanIntent.setData(contentUri);
-                        sendBroadcast(mediaScanIntent);
-                        // add to firebase
-                        uploadImageToFirebase(f.getName(), contentUri);
-                    }
-                }
-            }
-    );
-
     private void uploadImageToFirebase(String name, Uri contentUri) {
         StorageReference image = storageReference.child("images/" + name);
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -133,21 +154,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-    ActivityResultLauncher<Intent> galleryActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        Uri contentUri = data.getData();
-                        // add to firebase
-                        uploadImageToFirebase("some-image-name", contentUri);
-                    }
-                }
-            }
-    );
 
     // code taken from offical docs: https://developer.android.com/training/camera/photobasics
     private File createImageFile() throws IOException {
