@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            //TODO fix this
+                            intent.putExtra("email", editTextEmail.getText().toString().trim());
+                            intent.putExtra("mobile", "1234567890");
+                            intent.putExtra("name", "Test");
                             startActivity(intent);
                         } else {
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
