@@ -1,6 +1,7 @@
 package com.example.team30finalproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -16,9 +17,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
     private EditText editTextEmail, editTextPassword;
     private Button signUp;
     private FirebaseAuth mAuth;
@@ -32,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.password);
         signUp = (Button) findViewById(R.id.sign_up);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "User Created", Toast.LENGTH_LONG).show();
+                            addUserToDB(email);
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "User Already Registered", Toast.LENGTH_LONG).show();
@@ -76,6 +86,12 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void addUserToDB(String email) {
+        Account account = new Account(email);
+
+        mDatabase.child("account").child(String.valueOf(email.hashCode())).setValue(account);
     }
 
 
