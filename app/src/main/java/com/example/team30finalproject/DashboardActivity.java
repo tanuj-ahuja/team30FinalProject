@@ -19,10 +19,13 @@ public class DashboardActivity extends AppCompatActivity {
 
         fab = (FloatingActionButton) findViewById(R.id.add);
 
+        String email = getIntent().getExtras().getString("email");
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DashboardActivity.this, ProductDetailActivity.class);
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });

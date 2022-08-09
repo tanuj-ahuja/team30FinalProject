@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -37,15 +39,17 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERM_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
-    private EditText name;
-    private Button camera, gallery;
-    private String currentPhotoPath;
+    private EditText nameEditText, priceEditText, quantityEditText;
+    private Button camera, gallery, submit;
+    private DatabaseReference mDatabase;
+    private String currentPhotoPath, fileName;
     StorageReference storageReference;
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
@@ -55,10 +59,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        name = (EditText) findViewById(R.id.name);
+        nameEditText = (EditText) findViewById(R.id.name);
+        quantityEditText = (EditText) findViewById(R.id.quantity);
+        priceEditText = (EditText) findViewById(R.id.price);
         camera = (Button) findViewById(R.id.camera);
         gallery = (Button) findViewById(R.id.gallery);
+        submit = (Button) findViewById(R.id.submit_product);
         storageReference = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        String email = getIntent().getExtras().getString("email");
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +82,33 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryActivityResultLauncher.launch(gallery);
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = nameEditText.getText().toString().trim();
+                String quantityString = quantityEditText.getText().toString();
+                String priceString = priceEditText.getText().toString();
+
+                if (quantityString.isEmpty()) {
+                    quantityEditText.setError("Name can not be empty");
+                    return;
+                }
+                if (priceString.isEmpty()) {
+                    priceEditText.setError("Name can not be empty");
+                    return;
+                }
+                if (name.isEmpty()) {
+                    nameEditText.setError("Name can not be empty");
+                    return;
+                }
+
+                Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString), fileName);
+                DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
+                DatabaseReference newAccountRef = accountRef.push();
+                newAccountRef.setValue(p);
             }
         });
 
@@ -89,6 +126,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             sendBroadcast(mediaScanIntent);
                             // add to firebase
                             uploadImageToFirebase(f.getName(), contentUri);
+//                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
                 }
@@ -103,9 +141,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                             Intent data = result.getData();
                             Uri contentUri = data.getData();
                             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                            String imageFileName = "JPEG_" + timeStamp + "_";
+                            String imageFileName = "JPEG_" + timeStamp + ".jpg";
                             // add to firebase
                             uploadImageToFirebase(imageFileName, contentUri);
+//                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
                 }
@@ -136,6 +175,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void uploadImageToFirebase(String name, Uri contentUri) {
         StorageReference image = storageReference.child("images/" + name);
+        fileName = name;
         image.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

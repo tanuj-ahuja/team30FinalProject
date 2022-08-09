@@ -9,4 +9,5 @@
     <string name="add_product_details">Add Product Details</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="submit">Submit</string>
 </resources>

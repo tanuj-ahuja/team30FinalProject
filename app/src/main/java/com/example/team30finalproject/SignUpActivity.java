@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -74,6 +75,10 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "User Created", Toast.LENGTH_LONG).show();
                             addUserToDB(email);
+
+                            Intent intent = new Intent(SignUpActivity.this, DashboardActivity.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "User Already Registered", Toast.LENGTH_LONG).show();
