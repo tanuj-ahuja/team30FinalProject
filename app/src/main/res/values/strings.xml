@@ -8,4 +8,11 @@
     <string name="already_have_an_account_sign_in">Already have an account? Sign In</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_product_details">Add Product Details</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="submit">Submit</string>
+    <string name="add_image">Image:</string>
+    <string name="add_location">Location:</string>
+    <string name="add_current_location">Add Current Location</string>
 </resources>
