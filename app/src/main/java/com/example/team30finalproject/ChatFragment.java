@@ -38,6 +38,11 @@ public class ChatFragment extends Fragment {
     private String mobile;
     private String name;
     private final List<MessagesList> messagesLists = new ArrayList<>();
+    private MessagesAdapter messagesAdapter;
+    private String lastMessage = "";
+    private int unseenMessages = 0;
+    private String chatKey = "";
+    private boolean dataSet = false;
 
     private RecyclerView messagesRecyclerView;
     // DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://team30-final-project-default-rtdb.firebaseio.com/");
@@ -91,6 +96,10 @@ public class ChatFragment extends Fragment {
         messagesRecyclerView.setHasFixedSize(true);
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
+        messagesAdapter = new MessagesAdapter(messagesLists, getContext());
+
+        messagesRecyclerView.setAdapter(messagesAdapter);
+
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -113,19 +122,73 @@ public class ChatFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 messagesLists.clear();
+                unseenMessages = 0;
+                lastMessage = "";
+                chatKey = "";
 
                 for(DataSnapshot dataSnapshot: snapshot.child("users").getChildren()){
                     final String getMobile = dataSnapshot.getKey();
 
+                    dataSet =false;
+
                     if(!getMobile.equalsIgnoreCase(mobile)){
                         final String getName = dataSnapshot.child("name").getValue(String.class);
                         final String getProfilePic = dataSnapshot.child("profile_pic").getValue(String.class);
-                        MessagesList messagesList = new MessagesList(getName, getMobile,"", getProfilePic, 0);
 
-                        messagesLists.add(messagesList);
+                        databaseReference.child("chat").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int getChatCounts = (int)snapshot.getChildrenCount();
+
+                                if(getChatCounts > 0){
+                                    for(DataSnapshot dataSnapshot1:snapshot.getChildren()){
+                                        final String getKey = dataSnapshot1.getKey();
+                                        chatKey = getKey;
+
+                                        if(dataSnapshot1.hasChild("user_1") && dataSnapshot1.hasChild("user_2") && dataSnapshot1.hasChild("messages")){
+
+                                            final String getUserOne = dataSnapshot1.child("user_1").getValue(String.class);
+                                            final String getUserTwo = dataSnapshot1.child("user_2").getValue(String.class);
+
+                                            if((getUserOne.equals(getMobile) && getUserTwo.equals(mobile)) || (getUserOne.equals(mobile) && getUserTwo.equals(getMobile))){
+
+                                                for (DataSnapshot chatDataSnapshot: dataSnapshot1.child("messages").getChildren()){
+
+
+                                                    final long getMessageKey = Long.parseLong(chatDataSnapshot.getKey());
+                                                    final long getLastSeenMessage = Long.parseLong(MemoryData.getLastMsgTS(getContext(), getKey));
+
+                                                    lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
+                                                    if(getMessageKey > getLastSeenMessage){
+
+
+
+                                                    }
+                                                }
+
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                                if (!dataSet){
+                                    dataSet = true;
+                                    MessagesList messagesList = new MessagesList(getName, getMobile, lastMessage, getProfilePic, unseenMessages, chatKey);
+                                    messagesLists.add(messagesList);
+                                    messagesAdapter.updateData(messagesLists);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
-                messagesRecyclerView.setAdapter(new MessagesAdapter(messagesLists, getContext()));
+
+
             }
 
             @Override

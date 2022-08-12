@@ -19,9 +19,12 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText editTextEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword, editTextMobile, editTextName;
     private Button signUp;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -33,6 +36,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         editTextEmail = (EditText) findViewById(R.id.email);
         editTextPassword = (EditText) findViewById(R.id.password);
+        editTextMobile = (EditText) findViewById(R.id.mobile);
+        editTextName = (EditText) findViewById(R.id.name);
         signUp = (Button) findViewById(R.id.sign_up);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -41,6 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
+                String mobile = editTextMobile.getText().toString().trim();
+                String name = editTextName.getText().toString().trim();
 
                 if (email.isEmpty()) {
                     editTextEmail.setError("Email can not be empty");
@@ -62,12 +69,27 @@ public class SignUpActivity extends AppCompatActivity {
                     editTextPassword.requestFocus();
                 }
 
+                if (mobile.isEmpty()) {
+                    editTextMobile.setError("Mobile No. can not be empty");
+                    editTextMobile.requestFocus();
+                }
+
+                if (mobile.length() != 10) {
+                    editTextMobile.setError("Mobile No. should be 10-digit");
+                    editTextMobile.requestFocus();
+                }
+
                 mAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(), editTextPassword.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "User Created", Toast.LENGTH_LONG).show();
-                            mDatabase.child("users").push().setValue("Hello");
+                            Map<String, Object> obj = new HashMap<>();
+                            obj.put("email", email);
+                            obj.put("name", name);
+                            obj.put("profile_pic", "https://cdn.vectorstock.com/i/thumb-large/99/94/default-avatar-placeholder-profile-icon-male-vector-23889994.webp");
+                            mDatabase.child("users").push().child(mobile);
+                            mDatabase.child("users").child(mobile).updateChildren(obj);
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "User Already Registered", Toast.LENGTH_LONG).show();
