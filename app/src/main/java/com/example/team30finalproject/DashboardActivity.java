@@ -9,12 +9,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -29,6 +33,8 @@ public class DashboardActivity extends AppCompatActivity {
     private ChatFragment chatFragment;
     private PostFragment postFragment;
 
+    private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +45,20 @@ public class DashboardActivity extends AppCompatActivity {
         name = getIntent().getStringExtra("name");
 
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+
+        fab = (FloatingActionButton) findViewById(R.id.add);
+
+        String email = getIntent().getExtras().getString("email");
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, ProductDetailActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }
+        });
 
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tablayout);

@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                            intent.putExtra("email", email);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.putExtra("email", editTextEmail.getText().toString().trim());
                             intent.putExtra("name", "Tejas Wate");

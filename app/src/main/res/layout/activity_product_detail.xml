@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductDetailActivity"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/add_product_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_product_details"
+        android:textSize="20dp"
+        android:layout_marginBottom="20dp" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/add_product_details" />
+
+    <EditText
+        android:id="@+id/quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Quantity"
+        android:inputType="number"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/name"/>
+
+    <EditText
+        android:id="@+id/price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/quantity" />
+
+    <TextView
+        android:id="@+id/add_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/add_image"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/camera"
+        android:layout_toRightOf="@+id/add_image"/>
+
+    <Button
+        android:id="@+id/gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gallery"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/price"
+        android:layout_toRightOf="@+id/camera"/>
+
+    <CheckBox
+        android:id="@+id/image_added"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_toRightOf="@+id/gallery"
+        android:layout_marginBottom="10dp"
+        android:checked="false"
+        android:clickable="false"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/add_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_location"
+        android:textSize="20dp"
+        android:layout_below="@+id/add_image"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:id="@+id/location_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_image"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/add_current_location"
+        android:layout_toRightOf="@+id/add_location"/>
+
+    <CheckBox
+        android:id="@+id/location_added"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image_added"
+        android:layout_toRightOf="@+id/gallery"
+        android:checked="false"
+        android:clickable="false"
+        android:text="" />
+
+    <Button
+        android:id="@+id/submit_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        android:layout_below="@+id/add_location"
+        android:layout_marginBottom="20dp"/>
+
+
+</RelativeLayout>
