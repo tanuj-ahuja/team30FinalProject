@@ -50,6 +50,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Button camera, gallery, submit;
     private DatabaseReference mDatabase;
     private String currentPhotoPath, fileName;
+    private String uploadImageName;
+    private Uri uploadImageContentUri;
     StorageReference storageReference;
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
@@ -105,6 +107,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (uploadImageContentUri != null && !uploadImageName.isEmpty()) {
+                    uploadImageToFirebase(uploadImageName, uploadImageContentUri);
+                }
+
                 Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString), fileName);
                 DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
                 DatabaseReference newAccountRef = accountRef.push();
@@ -125,7 +131,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                             mediaScanIntent.setData(contentUri);
                             sendBroadcast(mediaScanIntent);
                             // add to firebase
-                            uploadImageToFirebase(f.getName(), contentUri);
+                            uploadImageName = f.getName();
+                            uploadImageContentUri = contentUri;
+//                            uploadImageToFirebase(f.getName(), contentUri);
 //                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
@@ -143,7 +151,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                             String imageFileName = "JPEG_" + timeStamp + ".jpg";
                             // add to firebase
-                            uploadImageToFirebase(imageFileName, contentUri);
+                            uploadImageName = imageFileName;
+                            uploadImageContentUri = contentUri;
+//                            uploadImageToFirebase(imageFileName, contentUri);
 //                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
@@ -185,7 +195,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         Log.d("tag", "Success" + uri.toString());
                     }
                 });
-                Toast.makeText(ProductDetailActivity.this, "Image is Uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProductDetailActivity.this, "Done!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
