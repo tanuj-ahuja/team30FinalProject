@@ -6,6 +6,8 @@
     <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
     <string name="sign_up">Sign Up</string>
     <string name="already_have_an_account_sign_in">Already have an account? Sign In</string>
+    <string name="enter_mobile">Enter Mobile</string>
+    <string name="enter_name">Enter Name</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_product_details">Add Product Details</string>

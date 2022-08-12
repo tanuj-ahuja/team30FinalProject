@@ -25,6 +25,9 @@ public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private String email;
+    private String mobile;
+    private String name;
 
     private BoardFragment boardFragment;
     private ChatFragment chatFragment;
@@ -36,6 +39,10 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        email = getIntent().getStringExtra("email");
+        mobile = getIntent().getStringExtra("mobile");
+        name = getIntent().getStringExtra("name");
 
         toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -57,10 +64,8 @@ public class DashboardActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tablayout);
 
         boardFragment = new BoardFragment();
-        chatFragment = new ChatFragment();
+        chatFragment = ChatFragment.newInstance(email, mobile, name);
         postFragment = new PostFragment();
-
-        tabLayout.setupWithViewPager(viewPager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         viewPagerAdapter.addFragment(boardFragment, "Board");
@@ -68,9 +73,12 @@ public class DashboardActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(postFragment, "Posts");
         viewPager.setAdapter(viewPagerAdapter);
 
+        tabLayout.setupWithViewPager(viewPager);
+
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_dashboard_24);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_chat_24);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_inbox_24);
+
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
