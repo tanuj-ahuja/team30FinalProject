@@ -154,15 +154,16 @@ public class ChatFragment extends Fragment {
 
                                                 for (DataSnapshot chatDataSnapshot: dataSnapshot1.child("messages").getChildren()){
 
-
                                                     final long getMessageKey = Long.parseLong(chatDataSnapshot.getKey());
-                                                    final long getLastSeenMessage = Long.parseLong(MemoryData.getLastMsgTS(getContext(), getKey));
+                                                    if (!MemoryData.getLastMsgTS(getContext(), getKey).isEmpty()) {
+                                                        final long getLastSeenMessage = Long.parseLong(MemoryData.getLastMsgTS(getContext(), getKey));
 
-                                                    lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
-                                                    if(getMessageKey > getLastSeenMessage){
+                                                        lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
+                                                        if (getMessageKey > getLastSeenMessage) {
 
-                                                        unseenMessages++;
+                                                            unseenMessages++;
 
+                                                        }
                                                     }
                                                 }
 
