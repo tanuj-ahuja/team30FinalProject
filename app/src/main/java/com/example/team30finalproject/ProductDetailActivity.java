@@ -3,6 +3,7 @@ package com.example.team30finalproject;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -26,6 +29,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -48,6 +52,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +60,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERM_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
+    private String uploadImageName;
+    private Uri uploadImageContentUri;
     private static final int LOCATION_REQUEST_CODE = 99;
     private EditText nameEditText, priceEditText, quantityEditText;
     private TextView nearestLandmark;
@@ -128,6 +135,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                     nameEditText.setError("Product name cannot be empty");
                     return;
                 }
+                
+                if (uploadImageContentUri != null && !uploadImageName.isEmpty()) {
+                    uploadImageToFirebase(uploadImageName, uploadImageContentUri);
+                }
 
                 DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
                 DatabaseReference newAccountRef = accountRef.push();
@@ -143,6 +154,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryActivityResultLauncher.launch(gallery);
+                
             }
         });
 
@@ -159,8 +171,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                             mediaScanIntent.setData(contentUri);
                             sendBroadcast(mediaScanIntent);
                             // add to firebase
-                            uploadImageToFirebase(f.getName(), contentUri);
-                            Log.d("currentPhotoPath", currentPhotoPath);
+                            uploadImageName = f.getName();
+                            uploadImageContentUri = contentUri;
+//                            uploadImageToFirebase(f.getName(), contentUri);
+//                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
                 }
@@ -177,8 +191,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                             String imageFileName = "JPEG_" + timeStamp + ".jpg";
                             // add to firebase
-                            uploadImageToFirebase(imageFileName, contentUri);
-                            Log.d("currentPhotoPath", currentPhotoPath);
+                            uploadImageName = imageFileName;
+                            uploadImageContentUri = contentUri;
+//                            uploadImageToFirebase(imageFileName, contentUri);
+//                            Log.d("currentPhotoPath", currentPhotoPath);
                         }
                     }
                 }
@@ -258,7 +274,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                         Log.d("tag", "Success" + uri.toString());
                     }
                 });
-                Toast.makeText(ProductDetailActivity.this, "Image is Uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProductDetailActivity.this, "Done!", Toast.LENGTH_SHORT).show();
+           
                 image_added.setChecked(true);
             }
         }).addOnFailureListener(new OnFailureListener() {

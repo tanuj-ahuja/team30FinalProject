@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">team30FinalProject</string>
+    <string name="app_name">FarmBoard</string>
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter password</string>
     <string name="sign_in">Sign In</string>
