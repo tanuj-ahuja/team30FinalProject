@@ -59,7 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
     LocationRequest locationRequest;
     LocationCallback locationCallback;
     private static final int LOCATION_REQUEST_CODE = 99;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,6 @@ public class DashboardActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.add);
 
         String email = getIntent().getExtras().getString("email");
-
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY);
         locationRequest.setInterval(5 * 1000);

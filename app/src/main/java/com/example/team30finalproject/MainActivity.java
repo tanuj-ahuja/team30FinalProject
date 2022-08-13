@@ -51,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String password = editTextPassword.getText().toString().trim();
                 String email = editTextEmail.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
 
                 if (email.isEmpty()) {
-                    editTextEmail.setError("Mobile no. can not be empty");
+                    editTextEmail.setError("Email can not be empty");
                     editTextEmail.requestFocus();
                 }
 

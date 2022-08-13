@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class Account {
 
     public String email;
-
     public ArrayList uploads;
 
     public Account() {
@@ -22,5 +21,5 @@ public class Account {
         this.email = email;
         this.uploads = uploads;
     }
-
 }
+
