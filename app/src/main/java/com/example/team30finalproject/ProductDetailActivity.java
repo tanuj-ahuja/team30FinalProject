@@ -12,22 +12,35 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -41,20 +54,29 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERM_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
-    private EditText nameEditText, priceEditText, quantityEditText;
-    private Button camera, gallery, submit;
-    private DatabaseReference mDatabase;
-    private String currentPhotoPath, fileName;
     private String uploadImageName;
     private Uri uploadImageContentUri;
+    private static final int LOCATION_REQUEST_CODE = 99;
+    private EditText nameEditText, priceEditText, quantityEditText;
+    private TextView nearestLandmark;
+    private Button camera, gallery, submit, location;
+    private CheckBox image_added, location_added;
+    private DatabaseReference mDatabase;
+    private String currentPhotoPath, fileName;
+    private String strAddress;
+    private double latitude;
+    private double longitude;
     StorageReference storageReference;
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationRequest locationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +89,30 @@ public class ProductDetailActivity extends AppCompatActivity {
         camera = (Button) findViewById(R.id.camera);
         gallery = (Button) findViewById(R.id.gallery);
         submit = (Button) findViewById(R.id.submit_product);
+        location = (Button) findViewById(R.id.location_selection);
+        image_added = (CheckBox) findViewById(R.id.image_added);
+        location_added = (CheckBox) findViewById(R.id.location_added);
+        nearestLandmark = (TextView) findViewById(R.id.landmark_location);
         storageReference = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         String email = getIntent().getExtras().getString("email");
 
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(5 * 1000);
+
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateLocation();
+            }
+        });
+
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 askCameraPermission();
-            }
-        });
-
-        gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryActivityResultLauncher.launch(gallery);
             }
         });
 
@@ -95,26 +124,37 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String priceString = priceEditText.getText().toString();
 
                 if (quantityString.isEmpty()) {
-                    quantityEditText.setError("Name can not be empty");
+                    quantityEditText.setError("Quantity cannot be empty");
                     return;
                 }
                 if (priceString.isEmpty()) {
-                    priceEditText.setError("Name can not be empty");
+                    priceEditText.setError("Price cannot be empty");
                     return;
                 }
                 if (name.isEmpty()) {
-                    nameEditText.setError("Name can not be empty");
+                    nameEditText.setError("Product name cannot be empty");
                     return;
                 }
-
+                
                 if (uploadImageContentUri != null && !uploadImageName.isEmpty()) {
                     uploadImageToFirebase(uploadImageName, uploadImageContentUri);
                 }
 
-                Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString), fileName);
                 DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
                 DatabaseReference newAccountRef = accountRef.push();
+
+                Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString),
+                        fileName, latitude, longitude, strAddress);
                 newAccountRef.setValue(p);
+            }
+        });
+
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryActivityResultLauncher.launch(gallery);
+                
             }
         });
 
@@ -162,6 +202,38 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
+    private void updateLocation(){
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ProductDetailActivity.this);
+
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    getLocationValues(location);
+                }
+            });
+        } else{
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            }
+        }
+    }
+
+    private void getLocationValues(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        location_added.setChecked(true);
+        Geocoder geocoder = new Geocoder(ProductDetailActivity.this);
+        try{
+            List<Address> address = geocoder.getFromLocation(latitude,longitude,1);
+            strAddress = address.get(0).getAddressLine(0);
+            nearestLandmark.setText(strAddress);
+        } catch (Exception e){
+            strAddress = "NA";
+            nearestLandmark.setText("Unable to get street address");
+        }
+    }
+
     private void askCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
@@ -181,6 +253,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Camera Permission is required to use camera", Toast.LENGTH_SHORT). show();
             }
         }
+        if(requestCode == LOCATION_REQUEST_CODE){
+            if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                updateLocation();
+            } else{
+                Toast.makeText(this, "Location Permission is required to add the location", Toast.LENGTH_SHORT). show();
+            }
+        }
     }
 
     private void uploadImageToFirebase(String name, Uri contentUri) {
@@ -196,6 +275,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     }
                 });
                 Toast.makeText(ProductDetailActivity.this, "Done!", Toast.LENGTH_SHORT).show();
+           
+                image_added.setChecked(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

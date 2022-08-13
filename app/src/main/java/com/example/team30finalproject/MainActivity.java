@@ -16,18 +16,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private EditText editTextEmail, editTextPassword;
+    private EditText  editTextEmail, editTextPassword;
     private Button signIn;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         editTextEmail = (EditText) findViewById(R.id.email);
         editTextPassword = (EditText) findViewById(R.id.password);
         signIn = (Button) findViewById(R.id.login);
@@ -71,10 +78,49 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                            intent.putExtra("email", email);
+
+//                            MemoryData.saveData("3234563231", MainActivity.this);
+//                            MemoryData.saveName("Tanuj Ahuja", MainActivity.this);
+//                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
 //                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+//                            intent.putExtra("email", editTextEmail.getText().toString().trim());
+//                            intent.putExtra("name", "Tanuj Ahuja");
+//                            intent.putExtra("mobile", "3234563231");
+//                            startActivity(intent);
+//                            finish();
+
+                            DatabaseReference users = mDatabase.child("users");
+
+                            users.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    for (DataSnapshot user: snapshot.getChildren()){
+
+                                        String userE = user.child("email").getValue(String.class);
+                                        String userM = user.getKey();
+
+                                        if(userE.equals(email)){
+                                            MemoryData.saveData(userM, MainActivity.this);
+                                            MemoryData.saveName(user.child("name").getValue(String.class), MainActivity.this);
+                                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("email", editTextEmail.getText().toString().trim());
+                                            intent.putExtra("name", snapshot.child("name").getValue(String.class));
+                                            intent.putExtra("mobile", userM);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                         } else {
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
