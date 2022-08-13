@@ -161,7 +161,7 @@ public class ChatFragment extends Fragment {
                                                     lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
                                                     if(getMessageKey > getLastSeenMessage){
 
-
+                                                        unseenMessages++;
 
                                                     }
                                                 }

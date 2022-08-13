@@ -60,6 +60,7 @@ public class Chat extends AppCompatActivity {
 
         getUserMobile = MemoryData.getData(Chat.this);
 
+
         nameTV.setText(getName);
         Picasso.get().load(getProfilePic).into(profilePic);
 
