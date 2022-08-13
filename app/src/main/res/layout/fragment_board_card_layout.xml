@@ -147,6 +147,18 @@
                 android:padding="5dp"
                 android:id="@+id/product_streetaddr"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="390dp"
+                android:layout_height="200dp"
+                android:id="@+id/farmImage"
+                android:src="@drawable/farmboard_icon"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
