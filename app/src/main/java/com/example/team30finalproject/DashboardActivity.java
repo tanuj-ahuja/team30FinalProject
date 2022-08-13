@@ -21,6 +21,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -51,7 +54,9 @@ public class DashboardActivity extends AppCompatActivity {
     private ChatFragment chatFragment;
     private PostFragment postFragment;
 
-    private FloatingActionButton fab;
+    //private FloatingActionButton fab;
+    private TextView helloMsg;
+    private Button signOutBtn;
 
     private double latitude;
     private double longitude;
@@ -69,10 +74,25 @@ public class DashboardActivity extends AppCompatActivity {
         mobile = getIntent().getStringExtra("mobile");
         name = getIntent().getStringExtra("name");
 
+        helloMsg = (TextView) findViewById(R.id.hello_msg);
+        signOutBtn = (Button) findViewById(R.id.sign_out_btn);
+
+        String username = getIntent().getExtras().getString("name");
+        helloMsg.setText("Hello " + username);
+        signOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+
         toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-
-        fab = (FloatingActionButton) findViewById(R.id.add);
 
         String email = getIntent().getExtras().getString("email");
         locationRequest = LocationRequest.create();
@@ -91,22 +111,12 @@ public class DashboardActivity extends AppCompatActivity {
         updateLocation();
         startLocationUpdates();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopLocationUpdates();
-                Intent intent = new Intent(DashboardActivity.this, ProductDetailActivity.class);
-                intent.putExtra("email", email);
-                startActivity(intent);
-            }
-        });
-
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tablayout);
 
         boardFragment = BoardFragment.newInstance(email);
         chatFragment = ChatFragment.newInstance(email, mobile, name);
-        postFragment = PostFragment.newInstance(email);
+        postFragment = PostFragment.newInstance(email, username);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         viewPagerAdapter.addFragment(boardFragment, "Board");

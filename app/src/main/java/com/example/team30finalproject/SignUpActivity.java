@@ -108,6 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
                             addUserToDB(email);
                             Intent intent = new Intent(SignUpActivity.this, DashboardActivity.class);
                             intent.putExtra("email", email);
+                            intent.putExtra("name", name);
                             startActivity(intent);
 
                         } else {

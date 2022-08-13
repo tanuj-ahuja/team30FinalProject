@@ -144,6 +144,7 @@ public class BoardFragment extends Fragment {
                             String product_streetAddr = innerDataSnapshot.child("streetAddress").getValue(String.class);
                             Double product_latitude = innerDataSnapshot.child("latitude").getValue(Double.class);
                             Double product_longitude = innerDataSnapshot.child("longitude").getValue(Double.class);
+                            String product_seller = innerDataSnapshot.child("username").getValue(String.class);
 
                             float[] distance_results= new float[1];
                             Location.distanceBetween(latitude, longitude, product_latitude, product_longitude, distance_results);
@@ -151,7 +152,7 @@ public class BoardFragment extends Fragment {
 
                             BoardFragmentModel model = new BoardFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance);
+                                    product_distance, product_seller);
                             productList.add(model);
                         }
                         Collections.sort(productList);

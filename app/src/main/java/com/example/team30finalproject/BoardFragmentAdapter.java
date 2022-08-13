@@ -37,6 +37,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
         holder.price.setText(String.valueOf(model.getPrice()));
         holder.streetAddress.setText(String.valueOf(model.getStreetAddress()));
         holder.distance.setText(String.valueOf(model.getDistance()) + " mi");
+        holder.seller.setText(model.getUsername());
     }
 
     @Override
@@ -45,7 +46,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView product, quantity, price, streetAddress, distance;
+        TextView product, quantity, price, streetAddress, distance, seller;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product_name);
@@ -53,6 +54,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
             price = itemView.findViewById(R.id.product_price);
             streetAddress = itemView.findViewById(R.id.product_streetaddr);
             distance = itemView.findViewById(R.id.product_distance);
+            seller = itemView.findViewById(R.id.product_seller);
         }
     }
 }

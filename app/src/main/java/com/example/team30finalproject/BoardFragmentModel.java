@@ -1,7 +1,7 @@
 package com.example.team30finalproject;
 
 public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
-    String name, streetAddress;
+    String name, streetAddress, username;
     int quantity;
     double price, latitude, longitude, distance;
 
@@ -22,7 +22,8 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
     }
 
     public BoardFragmentModel(String name, double price, int quantity, double latitude,
-                              double longitude, String streetAddress, double distance) {
+                              double longitude, String streetAddress, double distance,
+                              String username) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -30,6 +31,7 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
         this.longitude = longitude;
         this.streetAddress = streetAddress;
         this.distance = distance;
+        this.username = username;
     }
 
     @Override
@@ -75,5 +77,13 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String name) {
+        this.username = username;
     }
 }

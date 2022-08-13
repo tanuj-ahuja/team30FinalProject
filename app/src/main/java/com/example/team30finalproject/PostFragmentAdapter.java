@@ -36,7 +36,7 @@ public class PostFragmentAdapter extends RecyclerView.Adapter<PostFragmentAdapte
         holder.quantity.setText(String.valueOf(model.getQuantity()));
         holder.price.setText(String.valueOf(model.getPrice()));
         holder.streetAddress.setText(String.valueOf(model.getStreetAddress()));
-        holder.distance.setText(String.valueOf(model.getDistance()) + " mi");
+        holder.time.setText(model.time);
     }
 
     @Override
@@ -45,14 +45,14 @@ public class PostFragmentAdapter extends RecyclerView.Adapter<PostFragmentAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView product, quantity, price, streetAddress, distance;
+        TextView product, quantity, price, streetAddress, time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product_name);
             quantity = itemView.findViewById(R.id.product_quantity);
             price = itemView.findViewById(R.id.product_price);
             streetAddress = itemView.findViewById(R.id.product_streetaddr);
-            distance = itemView.findViewById(R.id.product_distance);
+            time = itemView.findViewById(R.id.product_time);
         }
     }
 }

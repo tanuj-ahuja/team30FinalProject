@@ -1,6 +1,7 @@
 package com.example.team30finalproject;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -24,6 +25,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +43,7 @@ public class PostFragment extends Fragment {
     PostFragmentAdapter adapter;
     ArrayList<PostFragmentModel> productList;
 
-    private String email;
+    private String email, username;
     private double latitude;
     private double longitude;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -50,15 +52,19 @@ public class PostFragment extends Fragment {
     private static final DecimalFormat df = new DecimalFormat("0.00");
     private static final int LOCATION_REQUEST_CODE = 99;
     private static final String ARG_EMAIL = "email";
+    private static final String ARG_NAME = "name";
+
+    private FloatingActionButton fab;
 
     public PostFragment() {
         // Required empty public constructor
     }
 
-    public static PostFragment newInstance(String param1) {
+    public static PostFragment newInstance(String param1, String param2) {
         PostFragment fragment = new PostFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EMAIL, param1);
+        args.putString(ARG_NAME, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -112,11 +118,24 @@ public class PostFragment extends Fragment {
 
         if (getArguments() != null) {
             email = getArguments().getString(ARG_EMAIL);
+            username = getArguments().getString(ARG_NAME);
         }
 
         final String currentAccountKey = String.valueOf(email.hashCode());
 
         View v = inflater.inflate(R.layout.fragment_post, container, false);
+
+        fab = (FloatingActionButton) v.findViewById(R.id.add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+                intent.putExtra("email", email);
+                intent.putExtra("name", username);
+                startActivity(intent);
+            }
+        });
+
         recyclerView = v.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
@@ -141,14 +160,10 @@ public class PostFragment extends Fragment {
                             String product_streetAddr = innerDataSnapshot.child("streetAddress").getValue(String.class);
                             Double product_latitude = innerDataSnapshot.child("latitude").getValue(Double.class);
                             Double product_longitude = innerDataSnapshot.child("longitude").getValue(Double.class);
-
-                            float[] distance_results= new float[1];
-                            Location.distanceBetween(latitude, longitude, product_latitude, product_longitude, distance_results);
-                            double product_distance = Double.parseDouble(df.format(distance_results[0] / 1609.344));
-
+                            String product_time = innerDataSnapshot.child("postTime").getValue(String.class);
                             PostFragmentModel model = new PostFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance);
+                                    product_time);
                             productList.add(model);
                         }
                         Collections.sort(productList);
