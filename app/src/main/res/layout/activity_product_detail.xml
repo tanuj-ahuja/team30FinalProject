@@ -118,12 +118,35 @@
         android:clickable="false"
         android:text="" />
 
+    <TextView
+        android:id="@+id/nearest_landmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_added"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/nearby_location"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/landmark_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_added"
+        android:layout_toRightOf="@+id/nearest_landmark"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:text=""
+        android:textSize="20dp" />
+
     <Button
         android:id="@+id/submit_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submit"
-        android:layout_below="@+id/add_location"
+        android:layout_below="@+id/nearest_landmark"
         android:layout_marginBottom="20dp"/>
 
 

@@ -3,7 +3,6 @@ package com.example.team30finalproject;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +14,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -28,18 +27,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,8 +45,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -58,11 +54,15 @@ public class ProductDetailActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 102;
     private static final int LOCATION_REQUEST_CODE = 99;
     private EditText nameEditText, priceEditText, quantityEditText;
+    private TextView nearestLandmark;
     private Button camera, gallery, submit, location;
     private CheckBox image_added, location_added;
     private DatabaseReference mDatabase;
     private String currentPhotoPath, fileName;
-    private String latitude, longitude;
+    private String strlatitude, strlongitude;
+    private String strAddress;
+    private double latitude;
+    private double longitude;
     StorageReference storageReference;
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
@@ -83,6 +83,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         location = (Button) findViewById(R.id.location_selection);
         image_added = (CheckBox) findViewById(R.id.image_added);
         location_added = (CheckBox) findViewById(R.id.location_added);
+        nearestLandmark = (TextView) findViewById(R.id.landmark_location);
         storageReference = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -114,21 +115,23 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String priceString = priceEditText.getText().toString();
 
                 if (quantityString.isEmpty()) {
-                    quantityEditText.setError("Name can not be empty");
+                    quantityEditText.setError("Quantity cannot be empty");
                     return;
                 }
                 if (priceString.isEmpty()) {
-                    priceEditText.setError("Name can not be empty");
+                    priceEditText.setError("Price cannot be empty");
                     return;
                 }
                 if (name.isEmpty()) {
-                    nameEditText.setError("Name can not be empty");
+                    nameEditText.setError("Product name cannot be empty");
                     return;
                 }
 
-                Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString), fileName);
                 DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
                 DatabaseReference newAccountRef = accountRef.push();
+
+                Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString),
+                        fileName, latitude, longitude, strAddress);
                 newAccountRef.setValue(p);
             }
         });
@@ -199,9 +202,20 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void getLocationValues(Location location) {
-        latitude = String.valueOf(location.getLatitude());
-        longitude = String.valueOf(location.getLongitude());
+        strlatitude = String.valueOf(location.getLatitude());
+        strlongitude = String.valueOf(location.getLongitude());
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
         location_added.setChecked(true);
+        Geocoder geocoder = new Geocoder(ProductDetailActivity.this);
+        try{
+            List<Address> address = geocoder.getFromLocation(latitude,longitude,1);
+            strAddress = address.get(0).getAddressLine(0);
+            nearestLandmark.setText(strAddress);
+        } catch (Exception e){
+            strAddress = "NA";
+            nearestLandmark.setText("Unable to get street address");
+        }
     }
 
     private void askCameraPermission() {

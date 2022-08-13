@@ -35,7 +35,6 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword, editTextMobile, editTextName;
     private Button signUp;
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
