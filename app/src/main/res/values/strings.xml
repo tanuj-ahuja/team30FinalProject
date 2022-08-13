@@ -10,4 +10,12 @@
     <string name="enter_name">Enter Name</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_product_details">Add Product Details</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="submit">Submit</string>
+    <string name="add_image">Image:</string>
+    <string name="add_location">Location:</string>
+    <string name="add_current_location">Add Current Location</string>
+    <string name="nearby_location">Street Address:</string>
 </resources>
