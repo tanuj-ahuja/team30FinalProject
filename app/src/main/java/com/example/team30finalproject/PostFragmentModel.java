@@ -1,7 +1,11 @@
 package com.example.team30finalproject;
 
-public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
-    String name, streetAddress, username;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class PostFragmentModel implements Comparable<PostFragmentModel>{
+    String name, streetAddress, time;
     int quantity;
     double price, latitude, longitude, distance;
 
@@ -21,22 +25,40 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
         this.distance = distance;
     }
 
-    public BoardFragmentModel(String name, double price, int quantity, double latitude,
-                              double longitude, String streetAddress, double distance,
-                              String username) {
+    public PostFragmentModel(String name, double price, int quantity, double latitude,
+                              double longitude, String streetAddress, String time) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.latitude = latitude;
         this.longitude = longitude;
         this.streetAddress = streetAddress;
-        this.distance = distance;
-        this.username = username;
+        this.time = time;
     }
 
     @Override
-    public int compareTo(BoardFragmentModel o) {
-        return this.distance > o.distance ? 1 : (this.distance < o.distance ? -1 : 0);
+    public int compareTo(PostFragmentModel o) {
+        Date d1=new Date();
+        Date d2=new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
+        if(this.time == null || o.time ==null){
+            return 1;
+        }
+        try {
+            d1 = sdf.parse(this.time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            d2 = sdf.parse(o.time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(d1.compareTo(d2)>0){
+            return 1;
+        } else{
+            return -1;
+        }
     }
 
     public String getName() {
@@ -79,11 +101,11 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
         this.longitude = longitude;
     }
 
-    public String getUsername() {
-        return username;
+    public String getTime() {
+        return time;
     }
 
-    public void setUsername(String name) {
-        this.username = username;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

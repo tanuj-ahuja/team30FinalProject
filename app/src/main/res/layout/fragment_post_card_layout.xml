@@ -87,51 +87,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Seller: "
-                android:textStyle="bold"
-                android:textSize="22sp"
-                android:padding="5dp"
-                android:textColor="@color/black"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginStart="10dp"
-                android:padding="5dp"
-                android:id="@+id/product_seller"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Distance: "
-                android:textStyle="bold"
-                android:textSize="22sp"
-                android:padding="5dp"
-                android:textColor="@color/black"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginStart="10dp"
-                android:id="@+id/product_distance"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Street Address: "
                 android:textStyle="bold"
                 android:textSize="22sp"
@@ -146,6 +101,20 @@
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
                 android:id="@+id/product_streetaddr"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="10sp"
+                android:textColor="@color/black"
+                android:layout_marginStart="10dp"
+                android:id="@+id/product_time"/>
         </LinearLayout>
     </LinearLayout>
 

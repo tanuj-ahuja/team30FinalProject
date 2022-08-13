@@ -97,6 +97,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         String email = getIntent().getExtras().getString("email");
+        String username = getIntent().getExtras().getString("name");
 
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -135,6 +136,11 @@ public class ProductDetailActivity extends AppCompatActivity {
                     nameEditText.setError("Product name cannot be empty");
                     return;
                 }
+                if (latitude==0 || longitude==0) {
+                    location_added.setError("Location cannot be empty");
+                    location_added.requestFocus();
+                    return;
+                }
                 
                 if (uploadImageContentUri != null && !uploadImageName.isEmpty()) {
                     uploadImageToFirebase(uploadImageName, uploadImageContentUri);
@@ -143,8 +149,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                 DatabaseReference accountRef = mDatabase.child("account").child(String.valueOf(email.hashCode()));
                 DatabaseReference newAccountRef = accountRef.push();
 
+                String postTime = new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz").format(new Date());
+
                 Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString),
-                        fileName, latitude, longitude, strAddress);
+                        fileName, latitude, longitude, strAddress, username, postTime);
                 newAccountRef.setValue(p);
             }
         });
@@ -173,8 +181,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             // add to firebase
                             uploadImageName = f.getName();
                             uploadImageContentUri = contentUri;
-//                            uploadImageToFirebase(f.getName(), contentUri);
-//                            Log.d("currentPhotoPath", currentPhotoPath);
+                            image_added.setChecked(true);
                         }
                     }
                 }
@@ -193,8 +200,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             // add to firebase
                             uploadImageName = imageFileName;
                             uploadImageContentUri = contentUri;
-//                            uploadImageToFirebase(imageFileName, contentUri);
-//                            Log.d("currentPhotoPath", currentPhotoPath);
+                            image_added.setChecked(true);
                         }
                     }
                 }
@@ -275,8 +281,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                     }
                 });
                 Toast.makeText(ProductDetailActivity.this, "Done!", Toast.LENGTH_SHORT).show();
-           
-                image_added.setChecked(true);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

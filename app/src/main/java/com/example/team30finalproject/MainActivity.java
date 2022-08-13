@@ -94,11 +94,10 @@ public class MainActivity extends AppCompatActivity {
                             users.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                                     for (DataSnapshot user: snapshot.getChildren()){
-
                                         String userE = user.child("email").getValue(String.class);
                                         String userM = user.getKey();
+                                        String username = user.child("name").getValue(String.class);
 
                                         if(userE.equals(email)){
                                             MemoryData.saveData(userM, MainActivity.this);
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             intent.putExtra("email", editTextEmail.getText().toString().trim());
-                                            intent.putExtra("name", snapshot.child("name").getValue(String.class));
+                                            intent.putExtra("name", username);
                                             intent.putExtra("mobile", userM);
                                             startActivity(intent);
                                             finish();

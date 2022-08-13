@@ -154,7 +154,6 @@ public class ChatFragment extends Fragment {
 
                                                 for (DataSnapshot chatDataSnapshot: dataSnapshot1.child("messages").getChildren()){
 
-
                                                     final long getMessageKey = Long.parseLong(chatDataSnapshot.getKey());
                                                     final long getLastSeenMessage = Long.parseLong(MemoryData.getLastMsgTS(getContext(), getKey));
 

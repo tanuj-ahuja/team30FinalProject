@@ -1,10 +1,7 @@
 package com.example.team30finalproject;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,14 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BoardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BoardFragment extends Fragment {
 
     RecyclerView recyclerView;
@@ -143,7 +133,7 @@ public class BoardFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot: snapshot.child("account").getChildren()){
                     final String accountKey = dataSnapshot.getKey();
-                    if(currentAccountKey.equals(accountKey) && dataSnapshot.getChildrenCount()>1){
+                    if(dataSnapshot.getChildrenCount()>1){
                         for(DataSnapshot innerDataSnapshot: dataSnapshot.getChildren()){
                             if(innerDataSnapshot.getKey().equals("email")){
                                 continue;
@@ -154,6 +144,7 @@ public class BoardFragment extends Fragment {
                             String product_streetAddr = innerDataSnapshot.child("streetAddress").getValue(String.class);
                             Double product_latitude = innerDataSnapshot.child("latitude").getValue(Double.class);
                             Double product_longitude = innerDataSnapshot.child("longitude").getValue(Double.class);
+                            String product_seller = innerDataSnapshot.child("username").getValue(String.class);
 
                             float[] distance_results= new float[1];
                             Location.distanceBetween(latitude, longitude, product_latitude, product_longitude, distance_results);
@@ -161,7 +152,7 @@ public class BoardFragment extends Fragment {
 
                             BoardFragmentModel model = new BoardFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance);
+                                    product_distance, product_seller);
                             productList.add(model);
                         }
                         Collections.sort(productList);
