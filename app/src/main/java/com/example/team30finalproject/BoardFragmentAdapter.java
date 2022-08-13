@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
         holder.price.setText(String.valueOf(model.getPrice()));
         holder.streetAddress.setText(String.valueOf(model.getStreetAddress()));
         holder.distance.setText(String.valueOf(model.getDistance()) + " mi");
+        holder.farmImage.setImageBitmap(model.getImageFileName());
         holder.seller.setText(model.getUsername());
     }
 
@@ -46,6 +49,8 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        
+        ImageView farmImage;
         TextView product, quantity, price, streetAddress, distance, seller;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,6 +59,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
             price = itemView.findViewById(R.id.product_price);
             streetAddress = itemView.findViewById(R.id.product_streetaddr);
             distance = itemView.findViewById(R.id.product_distance);
+            farmImage = itemView.findViewById(R.id.farmImage);
             seller = itemView.findViewById(R.id.product_seller);
         }
     }
