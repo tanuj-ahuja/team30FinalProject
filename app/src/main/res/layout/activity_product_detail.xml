@@ -39,11 +39,11 @@
         android:id="@+id/price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Price"
-        android:inputType="numberDecimal"
+        android:layout_below="@+id/quantity"
         android:layout_marginBottom="20dp"
-        android:layout_below="@+id/quantity" />
+        android:ems="10"
+        android:hint="Price (USD)"
+        android:inputType="numberDecimal" />
 
     <TextView
         android:id="@+id/add_image"

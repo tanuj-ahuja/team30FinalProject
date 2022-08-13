@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,7 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,7 +62,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     private CheckBox image_added, location_added;
     private DatabaseReference mDatabase;
     private String currentPhotoPath, fileName;
-    private String strlatitude, strlongitude;
     private String strAddress;
     private double latitude;
     private double longitude;
@@ -202,8 +204,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void getLocationValues(Location location) {
-        strlatitude = String.valueOf(location.getLatitude());
-        strlongitude = String.valueOf(location.getLongitude());
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         location_added.setChecked(true);
