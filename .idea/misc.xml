@@ -19,9 +19,12 @@
         <entry key="app/src/main/res/layout/board_adapter_layout.xml" value="0.14221014492753623" />
         <entry key="app/src/main/res/layout/chat_adapter_layout.xml" value="0.2171875" />
         <entry key="app/src/main/res/layout/fragment_board.xml" value="0.24895833333333334" />
-        <entry key="app/src/main/res/layout/fragment_board_card_layout.xml" value="0.14221014492753623" />
-        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.12107396149949341" />
-        <entry key="app/src/main/res/layout/messages_adapter_layout.xml" value="0.24791666666666667" />
+        <entry key="app/src/main/res/layout/fragment_board_card_layout.xml" value="0.1598731884057971" />
+        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.1598731884057971" />
+        <entry key="app/src/main/res/layout/fragment_post.xml" value="0.1598731884057971" />
+        <entry key="app/src/main/res/layout/fragment_post_card_layout.xml" value="0.1598731884057971" />
+        <entry key="app/src/main/res/layout/messages_adapter_layout.xml" value="0.1598731884057971" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.1598731884057971" />
       </map>
     </option>
   </component>

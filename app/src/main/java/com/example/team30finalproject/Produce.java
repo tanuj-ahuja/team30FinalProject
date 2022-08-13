@@ -9,9 +9,12 @@ public class Produce {
     public double latitude;
     public double longitude;
     public String streetAddress;
+    public String username;
+    public String postTime;
 
     public Produce(String name, double price, int quantity, String imageFileName,
-                   double latitude, double longitude, String streetAddress) {
+                   double latitude, double longitude, String streetAddress, String username,
+                   String postTime) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -19,6 +22,8 @@ public class Produce {
         this.latitude = latitude;
         this.longitude = longitude;
         this.streetAddress = streetAddress;
+        this.username = username;
+        this.postTime = postTime;
     }
 }
 
