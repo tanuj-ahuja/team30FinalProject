@@ -79,41 +79,47 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("email", editTextEmail.getText().toString().trim());
-                            intent.putExtra("name", "Tejas Wate");
-                            intent.putExtra("mobile", "3239496863");
-                            startActivity(intent);
+//                            MemoryData.saveData("3234563231", MainActivity.this);
+//                            MemoryData.saveName("Tanuj Ahuja", MainActivity.this);
+//                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            intent.putExtra("email", editTextEmail.getText().toString().trim());
+//                            intent.putExtra("name", "Tanuj Ahuja");
+//                            intent.putExtra("mobile", "3234563231");
+//                            startActivity(intent);
+//                            finish();
 
-//                            DatabaseReference users = mDatabase.child("users");
-//
-//                            users.addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                                    for (DataSnapshot user: snapshot.getChildren()){
-//
-//                                        String userE = user.child("email").getValue(String.class);
-//                                        String userM = user.getKey();
-//
-//                                        if(userE.equals(email)){
-//                                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-//                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                            intent.putExtra("email", editTextEmail.getText().toString().trim());
-//                                            intent.putExtra("name", snapshot.child("name").getValue(String.class));
-//                                            intent.putExtra("mobile", userM);
-//                                            startActivity(intent);
-//                                        }
-//
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                }
-//                            });
+                            DatabaseReference users = mDatabase.child("users");
+
+                            users.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    for (DataSnapshot user: snapshot.getChildren()){
+
+                                        String userE = user.child("email").getValue(String.class);
+                                        String userM = user.getKey();
+
+                                        if(userE.equals(email)){
+                                            MemoryData.saveData(userM, MainActivity.this);
+                                            MemoryData.saveName(user.child("name").getValue(String.class), MainActivity.this);
+                                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("email", editTextEmail.getText().toString().trim());
+                                            intent.putExtra("name", snapshot.child("name").getValue(String.class));
+                                            intent.putExtra("mobile", userM);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
 
                         } else {
                             Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
