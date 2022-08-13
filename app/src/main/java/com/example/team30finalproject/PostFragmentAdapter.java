@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdapter.ViewHolder> {
+public class PostFragmentAdapter extends RecyclerView.Adapter<PostFragmentAdapter.ViewHolder> {
 
-    ArrayList<BoardFragmentModel> arrayList;
+    ArrayList<PostFragmentModel> arrayList;
 
-    public BoardFragmentAdapter(ArrayList<BoardFragmentModel> arrayList, Context context) {
+    public PostFragmentAdapter(ArrayList<PostFragmentModel> arrayList, Context context) {
         this.arrayList = arrayList;
         this.context = context;
     }
@@ -25,13 +25,13 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.fragment_board_card_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.fragment_post_card_layout, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BoardFragmentModel model = arrayList.get(position);
+        PostFragmentModel model = arrayList.get(position);
         holder.product.setText(model.getName());
         holder.quantity.setText(String.valueOf(model.getQuantity()));
         holder.price.setText(String.valueOf(model.getPrice()));

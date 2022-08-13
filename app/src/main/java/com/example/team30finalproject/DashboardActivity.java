@@ -106,7 +106,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         boardFragment = BoardFragment.newInstance(email);
         chatFragment = ChatFragment.newInstance(email, mobile, name);
-        postFragment = new PostFragment();
+        postFragment = PostFragment.newInstance(email);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         viewPagerAdapter.addFragment(boardFragment, "Board");
