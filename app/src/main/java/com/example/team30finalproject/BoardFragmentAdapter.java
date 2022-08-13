@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
         holder.price.setText(String.valueOf(model.getPrice()));
         holder.streetAddress.setText(String.valueOf(model.getStreetAddress()));
         holder.distance.setText(String.valueOf(model.getDistance()) + " mi");
+        holder.farmImage.setImageBitmap(model.getImageFileName());
     }
 
     @Override
@@ -47,6 +49,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView product, quantity, price, streetAddress, distance;
+        ImageView farmImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product_name);
@@ -54,6 +57,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
             price = itemView.findViewById(R.id.product_price);
             streetAddress = itemView.findViewById(R.id.product_streetaddr);
             distance = itemView.findViewById(R.id.product_distance);
+            farmImage = itemView.findViewById(R.id.farmImage);
         }
     }
 }

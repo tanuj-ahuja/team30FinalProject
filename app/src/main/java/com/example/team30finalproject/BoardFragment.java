@@ -3,6 +3,8 @@ package com.example.team30finalproject;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,13 +28,19 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +58,9 @@ public class BoardFragment extends Fragment {
     private DatabaseReference  dbRef = FirebaseDatabase.getInstance().getReference();
     BoardFragmentAdapter adapter;
     ArrayList<BoardFragmentModel> productList;
+
+    StorageReference storageReference;
+    Bitmap bitmap;
 
     private String email;
     private double latitude;
@@ -154,6 +165,30 @@ public class BoardFragment extends Fragment {
                             String product_streetAddr = innerDataSnapshot.child("streetAddress").getValue(String.class);
                             Double product_latitude = innerDataSnapshot.child("latitude").getValue(Double.class);
                             Double product_longitude = innerDataSnapshot.child("longitude").getValue(Double.class);
+                            String imageFileName = innerDataSnapshot.child("imageFileName").getValue(String.class);
+
+                            storageReference = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
+                            try {
+                                File localFile = File.createTempFile("tempfile", "jpg");
+                                storageReference.getFile(localFile)
+                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                                                bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                                Log.d("success","Some value stored in bitmap");
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(), "Can retrieve image bro", Toast.LENGTH_SHORT);
+                                                Log.e("failure","Errororor");
+                                            }
+                                        });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
 
                             float[] distance_results= new float[1];
                             Location.distanceBetween(latitude, longitude, product_latitude, product_longitude, distance_results);
@@ -161,7 +196,7 @@ public class BoardFragment extends Fragment {
 
                             BoardFragmentModel model = new BoardFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance);
+                                    product_distance, bitmap);
                             productList.add(model);
                         }
                         Collections.sort(productList);

@@ -1,9 +1,13 @@
 package com.example.team30finalproject;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
     String name, streetAddress;
     int quantity;
     double price, latitude, longitude, distance;
+    Bitmap imageFileName;
 
     public String getStreetAddress() {
         return streetAddress;
@@ -22,7 +26,7 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
     }
 
     public BoardFragmentModel(String name, double price, int quantity, double latitude,
-                              double longitude, String streetAddress, double distance) {
+                              double longitude, String streetAddress, double distance, Bitmap imageFileName) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -30,6 +34,7 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
         this.longitude = longitude;
         this.streetAddress = streetAddress;
         this.distance = distance;
+        this.imageFileName = imageFileName;
     }
 
     @Override
@@ -75,5 +80,9 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public Bitmap getImageFileName() {
+        return imageFileName;
     }
 }
