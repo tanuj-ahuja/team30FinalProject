@@ -154,6 +154,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Produce p = new Produce(name, Double.parseDouble(priceString), Integer.parseInt(quantityString),
                         fileName, latitude, longitude, strAddress, username, postTime);
                 newAccountRef.setValue(p);
+                finish();
             }
         });
 
