@@ -161,7 +161,7 @@ public class BoardFragment extends Fragment {
 
                             BoardFragmentModel model = new BoardFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance);
+                                    product_distance, "https://firebasestorage.googleapis.com/v0/b/team30-final-project.appspot.com/o/images%2FJPEG_20220813_192331.jpg?alt=media&token=eaf8929c-485b-42ff-9e48-a9ede11a6920");
                             productList.add(model);
                         }
                         Collections.sort(productList);

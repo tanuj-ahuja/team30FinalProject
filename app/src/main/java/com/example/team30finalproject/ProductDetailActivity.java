@@ -272,6 +272,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         Log.d("tag", "Success" + uri.toString());
+
                     }
                 });
                 Toast.makeText(ProductDetailActivity.this, "Done!", Toast.LENGTH_SHORT).show();

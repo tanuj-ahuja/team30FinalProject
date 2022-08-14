@@ -1,14 +1,18 @@
 package com.example.team30finalproject;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -38,6 +42,9 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
         holder.price.setText(String.valueOf(model.getPrice()));
         holder.streetAddress.setText(String.valueOf(model.getStreetAddress()));
         holder.distance.setText(String.valueOf(model.getDistance()) + " mi");
+
+        Picasso.get().load(model.getFileName())
+                .into(holder.image);
     }
 
     @Override
@@ -47,6 +54,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView product, quantity, price, streetAddress, distance;
+        ImageView image;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product_name);
@@ -54,6 +62,7 @@ public class BoardFragmentAdapter extends RecyclerView.Adapter<BoardFragmentAdap
             price = itemView.findViewById(R.id.product_price);
             streetAddress = itemView.findViewById(R.id.product_streetaddr);
             distance = itemView.findViewById(R.id.product_distance);
+            image = itemView.findViewById(R.id.produce_images);
         }
     }
 }
