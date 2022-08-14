@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
-    String name, streetAddress, username;
+    String name, streetAddress, username, imageFileName;
     int quantity;
     double price, latitude, longitude, distance;
-    Bitmap imageFileName;
+    //Bitmap imageFileName;
 
     public String getStreetAddress() {
         return streetAddress;
@@ -26,7 +26,7 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
     }
 
     public BoardFragmentModel(String name, double price, int quantity, double latitude,
-                              double longitude, String streetAddress, double distance, String username, Bitmap imageFileName) {
+                              double longitude, String streetAddress, double distance, String username, String imageFileName) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -83,8 +83,9 @@ public class BoardFragmentModel implements Comparable<BoardFragmentModel>{
         this.longitude = longitude;
     }
 
-    public Bitmap getImageFileName() {
+    public String getImageFileName() {
         return imageFileName;
+    }
     public String getUsername() {
         return username;
     }

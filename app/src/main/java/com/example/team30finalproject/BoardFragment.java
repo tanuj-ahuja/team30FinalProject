@@ -159,27 +159,27 @@ public class BoardFragment extends Fragment {
                             Double product_longitude = innerDataSnapshot.child("longitude").getValue(Double.class);
                             String imageFileName = innerDataSnapshot.child("imageFileName").getValue(String.class);
 
-                            storageReference = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
-                            try {
-                                File localFile = File.createTempFile("tempfile", "jpg");
-                                storageReference.getFile(localFile)
-                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                                                bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                                                Log.d("success","Some value stored in bitmap");
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getContext(), "Can retrieve image bro", Toast.LENGTH_SHORT);
-                                                Log.e("failure","Errororor");
-                                            }
-                                        });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+//                            storageReference = FirebaseStorage.getInstance().getReference("images/"+imageFileName);
+//                            try {
+//                                File localFile = File.createTempFile("tempfile", "jpg");
+//                                storageReference.getFile(localFile)
+//                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                                            @Override
+//                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//
+//                                                bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                                                Log.d("success","Some value stored in bitmap");
+//                                            }
+//                                        }).addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Toast.makeText(getContext(), "Can retrieve image bro", Toast.LENGTH_SHORT);
+//                                                Log.e("failure","Errororor");
+//                                            }
+//                                        });
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
 
 
                             String product_seller = innerDataSnapshot.child("username").getValue(String.class);
@@ -191,7 +191,7 @@ public class BoardFragment extends Fragment {
 
                             BoardFragmentModel model = new BoardFragmentModel(product_name,product_price,
                                     product_quantity,product_latitude,product_longitude, product_streetAddr,
-                                    product_distance, product_seller, bitmap);
+                                    product_distance, product_seller, imageFileName);
 
                             productList.add(model);
                         }

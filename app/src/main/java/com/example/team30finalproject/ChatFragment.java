@@ -158,8 +158,6 @@ public class ChatFragment extends Fragment {
                                                     long getLastSeenMessage = 0;
                                                     if(!MemoryData.getLastMsgTS(getContext(), getKey).isEmpty()){
                                                         getLastSeenMessage = Long.parseLong(MemoryData.getLastMsgTS(getContext(), getKey));
-                                                    }
-
                                                         lastMessage = chatDataSnapshot.child("msg").getValue(String.class);
                                                         if (getMessageKey > getLastSeenMessage) {
 
